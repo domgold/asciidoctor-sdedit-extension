@@ -1,0 +1,31 @@
+= Test
+
+== Hello
+
+* *Given* the following source code
++
+----
+include::testdiagram.sd[]
+----
+* When I include the file with `sdedit:`
++ 
+.testdiagram => included
+include::sdedit:testdiagram.sd[arrowColor=0,returnArrowVisible=false]
+
+* When I set up a sdedit block
++
+.testdiagram => block
+[sdedit,arrowColor=0,returnArrowVisible=false,target=fromblock,type=svg,outputfilename=fromblocko]
+....
+include::testdiagram.sd[]
+....
+
+.macrotitle
+sdedit::testdiagram.sd[foo=bar]
+
+|===
+|a | b
+|1 | 2
+|===
+
+
