@@ -1,4 +1,4 @@
 asciidoctor-sdedit-extension
 ============================
 
-Asciidoctor extension for creating sequence diagrams using sdedit.
+[Asciidoctor](http://asciidoctor.org) extension for creating UML2 sequence diagrams using [sdedit](http://sdedit.sourceforge.net/).
