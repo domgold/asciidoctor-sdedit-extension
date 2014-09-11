@@ -17,7 +17,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.kinimod.asciidoctor.sdedit.SdEditBlockProcessor;
 import org.kinimod.asciidoctor.sdedit.SdEditIncludeprocessor;
-import org.kinimod.asciidoctor.sdedit.SdeditBlockMacroProcessor;
+import org.kinimod.asciidoctor.sdedit.SdEditBlockMacroProcessor;
 
 /**
  * @author Dominik
@@ -37,7 +37,7 @@ public class TestSdEditIncludeProcessor {
 		asciidoctor.javaExtensionRegistry().block("sdedit",
 				SdEditBlockProcessor.class);
 		asciidoctor.javaExtensionRegistry().blockMacro("sdedit",
-				SdeditBlockMacroProcessor.class);
+				SdEditBlockMacroProcessor.class);
 		File baseDir = new File("src/test/resources");
 		File adoc = new File(baseDir, "sdinclude.adoc");
 		File destDir = folder.newFolder();

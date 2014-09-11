@@ -25,8 +25,11 @@ import net.sf.sdedit.util.DocUtil.XMLException;
 import net.sf.sdedit.util.ObjectFactory;
 import net.sf.sdedit.util.Pair;
 
+import org.apache.commons.io.FilenameUtils;
+
 public class SdEditImageGenerator implements ImageGenerator {
 
+	private static final int MAX_FILES_WITH_SAME_NAME = 1000;
 	private static final String DEFAULT_FORMAT_A4 = "A4";
 	private static final String ORIENTATION_ATTRIBUTE = "orientation";
 	private static final String PORTRAIT_ORIENTATION = "Portrait";
@@ -39,20 +42,37 @@ public class SdEditImageGenerator implements ImageGenerator {
 	@Override
 	public String generateImage(File inputFile, File outputDir,
 			Map<String, Object> attributes) {
+
+		String inputFileNameWithoutExtension = FilenameUtils
+				.getBaseName(inputFile.getAbsolutePath());
+
 		String type = AsciidoctorHelpers.getAttribute(attributes,
 				TYPE_ATTRIBUTE, DEFAULT_TYPE_PNG, false);
 		String outputFileName = AsciidoctorHelpers.getAttribute(attributes,
-				OUTPUTFILENAME_ATTRIBUTE, "sdedit", true);
-		outputFileName += "." + type;
+				OUTPUTFILENAME_ATTRIBUTE, inputFileNameWithoutExtension, true);
 
-		File outputFile = new File(outputDir, outputFileName);
+		File outputFile = getUniqueOutputFilename(outputDir, outputFileName,
+				type);
 
 		try {
 			createImageFromFile(inputFile, outputFile, attributes);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		return outputFileName;
+		return outputFile.getName();
+	}
+
+	private File getUniqueOutputFilename(File outputDir, String outputFileName,
+			String type) {
+		File outputFile = new File(outputDir, outputFileName + "." + type);
+		int i = 1;
+		while (outputFile.exists()) {
+			outputFile = new File(outputDir, outputFileName + i++ + "." + type);
+			if (i > MAX_FILES_WITH_SAME_NAME) {
+				throw new RuntimeException("Could not get unique filename.");
+			}
+		}
+		return outputFile;
 	}
 
 	@Override
@@ -62,16 +82,16 @@ public class SdEditImageGenerator implements ImageGenerator {
 				TYPE_ATTRIBUTE, DEFAULT_TYPE_PNG, false);
 		String outputFileName = AsciidoctorHelpers.getAttribute(attributes,
 				OUTPUTFILENAME_ATTRIBUTE, "sdedit", true);
-		outputFileName += "." + type;
 
-		File outputFile = new File(outputDir, outputFileName);
+		File outputFile = getUniqueOutputFilename(outputDir, outputFileName,
+				type);
 
 		try {
 			createImageFromString(content, outputFile, attributes);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		return outputFileName;
+		return outputFile.getName();
 	}
 
 	private void createImageFromFile(File inFile, File outFile,

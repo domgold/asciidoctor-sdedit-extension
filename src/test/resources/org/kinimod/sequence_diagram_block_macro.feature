@@ -1,19 +1,18 @@
 # language: en
 Feature: sdedit diagram block macro
 
-  Scenario: Simple sdedit diagram block
+  Scenario Outline: Using the macro block processor
     Given the following asciidoctor content
       """
       = Title
-      :outdir: <outdir>
       
-      A simple sequence diagram rendered as png.
+      A simple sequence diagram rendered as <type>.
       
-      sdedit::sequence.sd[type="png",returnArrowVisible=false]
+      sdedit::sequence.sd[type=<type>,returnArrowVisible=false]
       
       End.
       """
-    And the sdedit file named "sequence.ad" with the following content
+    And a file named "sequence.sd" with the following content
       """
        bfs:BFS[a]
        /queue:FIFO
@@ -23,15 +22,20 @@ Feature: sdedit diagram block macro
       """
     When I register the SdEditBlockMacroProcessor
     And I render the asciidoctor content to html
-    Then the file "in.html" exists in <outdir>
-    And the file "node-1.png" exists in <outdir>
-    And the file "in.html" in <outdir> contains the text "<img" and "node-1.png"
+    Then the rendered file contains the following text snippets:
+      | <img            |
+      | sequence.<type> |
+    And the file "sequence.<type>" exists in the output directory.
 
-  Scenario: Complex sdedit diagram block
+    Examples: 
+      | type |
+      | png  |
+      | svg  |
+
+  Scenario: Using the macro block processor with a complex sdedit diagram block
     Given the following asciidoctor content
       """
       = Title
-      :outdir: <outdir>
       
       == Simple Diagram
       
@@ -40,7 +44,7 @@ Feature: sdedit diagram block macro
       sdedit::sequence2.sd[type="png", format="Landscape"]
 
       """
-    And the sdedit file named "sequence2.ad" with the following content
+    And the file named "sequence2.sd" with the following content
       """
       bfs:BFS[a]
       /queue:FIFO
@@ -72,6 +76,7 @@ Feature: sdedit diagram block macro
       """
     When I register the SdEditBlockMacroProcessor
     And I render the asciidoctor content to html
-    Then the file "in.html" exists in <outdir>
-    And the file "node-1.svg" exists in <outdir>
-    And the file "in.html" in <outdir> contains the text "<img" and "svg"
+    Then the rendered file contains the following text snippets:
+      | <img         |
+      | sequence.png |
+    And the file "sequence.png" exists in the output directory.

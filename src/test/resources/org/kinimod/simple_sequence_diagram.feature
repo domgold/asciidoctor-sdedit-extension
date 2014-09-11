@@ -1,15 +1,14 @@
 # language: en
 Feature: sdedit diagram block
 
-  Scenario: Simple sdedit diagram block
+  Scenario: Using the block processor
     Given the following asciidoctor content
       """
       = Title
-      :outdir: <outdir>
       
       A simple sequence diagram rendered as png.
       
-      [sdedit,node-1,png]
+      [sdedit,outputnamefromargument,png]
       ----
       bfs:BFS[a]
       /queue:FIFO
@@ -20,27 +19,21 @@ Feature: sdedit diagram block
       """
     When I register the SdEditBlockProcessor
     And I render the asciidoctor content to html
-    Then the file "in.html" exists
-    And the file "node-1.png" exists
-    And the file "in.html" contains the text "<img" and "node-1.png"
+    Then the rendered file contains the following text snippets:
+      | <img                       |
+      | outputnamefromargument.png |
+    And the file "outputnamefromargument.png" exists in the output directory.
 
-  Scenario: Complex sdedit diagram block
+  Scenario: Using the block processor with a complex sdedit diagram block
     Given the following asciidoctor content
       """
       = Title
-      :outdir: <outdir>
-      
-      |===
-      |hello |a
-      
-      |a | a
-      |===
       
       == Simple Diagram
       
       A simple sequence diagram rendered as svg.
       
-      [sdedit,node-1,svg]
+      [sdedit,type=svg]
       ----
       bfs:BFS[a]
       /queue:FIFO
@@ -73,6 +66,7 @@ Feature: sdedit diagram block
       """
     When I register the SdEditBlockProcessor
     And I render the asciidoctor content to html
-    Then the file "in.html" exists
-    And the file "node-1.svg" exists
-    And the file "in.html" contains the text "<img" and "svg"
+    Then the rendered file contains the following text snippets:
+      | <img       |
+      | sdedit.svg |
+    And the file "sdedit.svg" exists in the output directory.
