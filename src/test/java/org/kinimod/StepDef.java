@@ -30,7 +30,7 @@ public class StepDef {
 		Ab, Bb, Cb
 	};
 
-	public TemporaryFolder folder = new TemporaryFolder();
+	
 
 	String asciidocContent;
 	File asciidocInputFile;
@@ -38,9 +38,17 @@ public class StepDef {
 	private String result;
 
 	private Asciidoctor asciidoctor;
+	private TemporaryFolder folder;
 
 	@Before
 	public void reset() throws IOException {
+		File parentFolder = new File("target/testoutput");
+		if(!parentFolder.exists()) {
+			if(!parentFolder.mkdirs()) {
+				throw new RuntimeException("Error creating folder " + parentFolder.getAbsolutePath());
+			}
+		}
+		folder = new TemporaryFolder(parentFolder);
 		asciidocContent = null;
 		folder.create();
 		asciidocInputFile = new File(folder.getRoot(), "in.adoc");

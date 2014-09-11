@@ -29,8 +29,10 @@ public class SdEditIncludeprocessor extends IncludeProcessor {
 		ImageGenerator imgGenerator = new SdEditImageGenerator();
 		Map<String, Object> docAttrs = document.getAttributes();
 		document.attributes();
-		String outputFilename = imgGenerator.generateImage(new File(target),
-				AsciidoctorHelpers.getImageDir(docAttrs), attributes);
+		String outputFilename = imgGenerator.generateImage(
+				new File(AsciidoctorHelpers.getAttribute(docAttrs, "docdir",
+						null, false), target), AsciidoctorHelpers
+						.getImageDir(docAttrs), attributes);
 		reader.push_include("image::" + outputFilename + "[]", target, target,
 				1, attributes);
 	}

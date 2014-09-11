@@ -14,7 +14,7 @@ import java.util.Map;
 import net.sf.sdedit.config.Configuration;
 import net.sf.sdedit.config.ConfigurationManager;
 import net.sf.sdedit.diagram.Diagram;
-import net.sf.sdedit.editor.DiagramFileHandler;
+import net.sf.sdedit.editor.DiagramLoader;
 import net.sf.sdedit.error.SemanticError;
 import net.sf.sdedit.error.SyntaxError;
 import net.sf.sdedit.server.Exporter;
@@ -28,9 +28,9 @@ import net.sf.sdedit.util.Pair;
 public class SdEditImageGenerator implements ImageGenerator {
 
 	private static final String DEFAULT_FORMAT_A4 = "A4";
-	private static final String LANDSCAPE_ORIENTATION = "Landscape";
 	private static final String ORIENTATION_ATTRIBUTE = "orientation";
 	private static final String PORTRAIT_ORIENTATION = "Portrait";
+	private static final String LANDSCAPE_ORIENTATION = "Landscape";
 	public static final String OUTPUTFILENAME_ATTRIBUTE = "outputfilename";
 	public static final String FORMAT_ATTRIBUTE = "format";
 	public static final String TYPE_ATTRIBUTE = "type";
@@ -107,8 +107,8 @@ public class SdEditImageGenerator implements ImageGenerator {
 		try {
 			out = new FileOutputStream(outFile);
 			try {
-				Pair<String, Bean<Configuration>> pair = DiagramFileHandler
-						.load(in, ConfigurationManager.getGlobalConfiguration()
+				Pair<String, Bean<Configuration>> pair = DiagramLoader.load(in,
+						ConfigurationManager.getGlobalConfiguration()
 								.getFileEncoding());
 				TextHandler th = new TextHandler(pair.getFirst());
 				Bean<Configuration> conf = pair.getSecond();
@@ -117,7 +117,7 @@ public class SdEditImageGenerator implements ImageGenerator {
 					ImagePaintDevice paintDevice = new ImagePaintDevice();
 					new Diagram(conf.getDataObject(), th, paintDevice)
 							.generate();
-					paintDevice.writeToStream("png", out);
+					paintDevice.writeToStream(out);
 				} else {
 					Exporter paintDevice = Exporter.getExporter(type,
 							orientation, format, out);

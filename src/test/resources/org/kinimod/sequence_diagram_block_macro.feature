@@ -1,14 +1,6 @@
 # language: en
 Feature: sdedit diagram block macro
 
-  Background: 
-    Given a simple message Ab
-    And a second message
-    And a table of entries
-      | role |
-      | url  |
-      | data |
-
   Scenario: Simple sdedit diagram block
     Given the following asciidoctor content
       """
@@ -17,7 +9,7 @@ Feature: sdedit diagram block macro
       
       A simple sequence diagram rendered as png.
       
-      sdedit::sequence.sd[type="png"]
+      sdedit::sequence.sd[type="png",returnArrowVisible=false]
       
       End.
       """
@@ -31,9 +23,9 @@ Feature: sdedit diagram block macro
       """
     When I register the SdEditBlockMacroProcessor
     And I render the asciidoctor content to html
-    Then the file "in.html" exists
-    And the file "node-1.png" exists
-    And the file "in.html" contains the text "<img" and "node-1.png"
+    Then the file "in.html" exists in <outdir>
+    And the file "node-1.png" exists in <outdir>
+    And the file "in.html" in <outdir> contains the text "<img" and "node-1.png"
 
   Scenario: Complex sdedit diagram block
     Given the following asciidoctor content
@@ -80,6 +72,6 @@ Feature: sdedit diagram block macro
       """
     When I register the SdEditBlockMacroProcessor
     And I render the asciidoctor content to html
-    Then the file "in.html" exists
-    And the file "node-1.svg" exists
-    And the file "in.html" contains the text "<img" and "svg"
+    Then the file "in.html" exists in <outdir>
+    And the file "node-1.svg" exists in <outdir>
+    And the file "in.html" in <outdir> contains the text "<img" and "svg"
