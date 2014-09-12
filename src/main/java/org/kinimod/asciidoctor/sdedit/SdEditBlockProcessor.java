@@ -10,6 +10,7 @@ import org.asciidoctor.extension.Reader;
 
 public class SdEditBlockProcessor extends BlockProcessor {
 
+	@SuppressWarnings("serial")
 	private static Map<String, Object> configs = new HashMap<String, Object>() {
 		{
 			put("contexts", Arrays.asList(":listing", ":literal", ":open"));
@@ -29,12 +30,18 @@ public class SdEditBlockProcessor extends BlockProcessor {
 	public Object process(AbstractBlock parent, Reader reader,
 			Map<String, Object> attributes) {
 		String content = reader.read();
-		ImageGenerator generator = new SdEditImageGenerator();
-		String outputFileName = generator.generateImage(content,
-				AsciidoctorHelpers.getImageDir(parent.document()
-						.getAttributes()), attributes);
+		Map<String, Object> docAttributes = parent.document().getAttributes();
+		String outputFileName = "missing.png";
+		try {
+			ImageGenerator generator = new SdEditImageGenerator(
+					AsciidoctorHelpers.getAttribute(docAttributes, "docdir",
+							null, false));
+			outputFileName = generator.generateImage(content,
+					AsciidoctorHelpers.getImageDir(docAttributes), attributes);
+		} catch (Exception ex) {
+			// ignore we return missing.png
+		}
 		return AsciidoctorHelpers.createImageBlock(outputFileName, attributes,
 				parent, this);
 	}
-
 }

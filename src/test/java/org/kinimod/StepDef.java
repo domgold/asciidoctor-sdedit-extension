@@ -1,13 +1,15 @@
 package org.kinimod;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.Attributes;
 import org.asciidoctor.AttributesBuilder;
@@ -26,6 +28,7 @@ import cucumber.api.java.en.When;
 
 public class StepDef {
 
+	private static final String STROKE_DASHARRAY_5_5 = "stroke-dasharray=\"5,5\"";
 	File asciidocInputFile;
 	File asciidocOutputFile;
 
@@ -33,10 +36,10 @@ public class StepDef {
 	private TemporaryFolder folder;
 	private File outputFolder;
 	private File inputFolder;
-	
+
 	@Before
 	public void scenario(Scenario scenario) {
-		
+
 	}
 
 	@Before
@@ -59,6 +62,28 @@ public class StepDef {
 	public void the_file_named_with_the_following_content(String filename,
 			String content) throws Throwable {
 		FileUtils.writeStringToFile(new File(inputFolder, filename), content);
+	}
+
+	public enum Switch {
+		enabling, disabling
+	}
+
+	@Given("^an sdedit config file named \"(.*?)\" (enabling|disabling) return arrows is in the same folder as the source document$")
+	public void an_sdedit_config_file_named_turning_on_off_return_arrows_is_in_the_same_folder_as_the_source_document(
+			String confFilename, Switch arrowState) throws Throwable {
+		File sdEditConfigFile = folder.newFile();
+		String switchState = arrowState.equals(Switch.enabling) ? "true"
+				: "false";
+		InputStream resourceAsStream = ClassLoader.getSystemClassLoader()
+				.getResourceAsStream("net/sf/sdedit/config/default.conf");
+		String string = IOUtils.toString(resourceAsStream, "UTF-8");
+		String replaceAll = string.replaceAll(
+				"<property name=\"returnArrowVisible\" value=\".*\" />",
+				"<property name=\"returnArrowVisible\" value=\"" + switchState
+						+ "\" />");
+		FileUtils.writeStringToFile(sdEditConfigFile, replaceAll);
+		FileUtils.copyFile(sdEditConfigFile,
+				new File(inputFolder, confFilename));
 	}
 
 	@When("^I register the SdEditBlockProcessor$")
@@ -91,11 +116,8 @@ public class StepDef {
 	@Then("^the rendered file contains the following text snippets:$")
 	public void the_rendered_file_contains_the_following_text_snippets(
 			List<String> snippets) throws Throwable {
-		String content = FileUtils.readFileToString(asciidocOutputFile);
-		for (String snippet : snippets) {
-			assertTrue(String.format("%s expected in :\n%s", snippet, content),
-					content.contains(snippet));
-		}
+		File f = asciidocOutputFile;
+		assertFileContainsSnippets(snippets, f);
 	}
 
 	@Then("^the file \"(.*?)\" exists in the output directory\\.$")
@@ -105,6 +127,26 @@ public class StepDef {
 		assertTrue(
 				String.format("File expected to exist: %s",
 						file.getAbsolutePath()), file.exists());
+	}
+
+	@Then("^the file \"(.*?)\" contains ([0-9]) return arrows\\.$")
+	public void the_file_contains_num_return_arrows(String filename,
+			int num_return_arrows) throws Throwable {
+		String content = FileUtils.readFileToString(new File(outputFolder,
+				filename));
+		assertEquals(String.format("expected %s times %s in:\n%s",
+				STROKE_DASHARRAY_5_5, num_return_arrows, content),
+				num_return_arrows,
+				content.split(STROKE_DASHARRAY_5_5).length - 1);
+	}
+
+	public void assertFileContainsSnippets(List<String> snippets, File f)
+			throws IOException {
+		String content = FileUtils.readFileToString(f);
+		for (String snippet : snippets) {
+			assertTrue(String.format("%s expected in :\n%s", snippet, content),
+					content.contains(snippet));
+		}
 	}
 
 }

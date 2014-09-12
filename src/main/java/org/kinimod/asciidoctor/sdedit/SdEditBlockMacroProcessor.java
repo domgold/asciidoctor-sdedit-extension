@@ -1,7 +1,6 @@
 package org.kinimod.asciidoctor.sdedit;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +12,7 @@ import org.asciidoctor.extension.BlockMacroProcessor;
 
 public class SdEditBlockMacroProcessor extends BlockMacroProcessor {
 
+	@SuppressWarnings("serial")
 	private static Map<String, Object> configs = new HashMap<String, Object>() {
 		{
 			// put("contexts", Arrays.asList(":listing", ":literal", ":open"));
@@ -40,20 +40,23 @@ public class SdEditBlockMacroProcessor extends BlockMacroProcessor {
 		}
 		String outputFileName = "missing.png";
 		try {
+			Map<String, Object> docAttributes = parent.document()
+					.getAttributes();
 			String content = FileUtils.readFileToString(new File(
-					AsciidoctorHelpers.getAttribute(parent.document()
-							.getAttributes(), "docdir", null, false), target));
+					AsciidoctorHelpers.getAttribute(docAttributes, "docdir",
+							null, false), target));
 			if (!attributes
 					.containsKey(SdEditImageGenerator.OUTPUTFILENAME_ATTRIBUTE)) {
 				attributes.put(SdEditImageGenerator.OUTPUTFILENAME_ATTRIBUTE,
 						FilenameUtils.getBaseName(target));
 			}
-			ImageGenerator generator = new SdEditImageGenerator();
+			ImageGenerator generator = new SdEditImageGenerator(
+					AsciidoctorHelpers.getAttribute(docAttributes, "docdir",
+							null, false));
 			outputFileName = generator.generateImage(content,
-					AsciidoctorHelpers.getImageDir(parent.document()
-							.getAttributes()), attributes);
+					AsciidoctorHelpers.getImageDir(docAttributes), attributes);
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// ignore we output missing.png
 		}
 		return AsciidoctorHelpers.createImageBlock(outputFileName, attributes,
@@ -67,7 +70,9 @@ public class SdEditBlockMacroProcessor extends BlockMacroProcessor {
 		String[] args = object.split(",");
 		for (String arg : args) {
 			String[] keyValue = arg.split("=");
-			newMap.put(keyValue[0], keyValue[1]);
+			if (keyValue.length > 1) {
+				newMap.put(keyValue[0], keyValue[1]);
+			}
 		}
 		return newMap;
 	}

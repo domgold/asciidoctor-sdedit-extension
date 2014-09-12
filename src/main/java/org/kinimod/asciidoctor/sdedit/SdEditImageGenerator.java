@@ -21,19 +21,28 @@ import net.sf.sdedit.server.Exporter;
 import net.sf.sdedit.text.TextHandler;
 import net.sf.sdedit.ui.ImagePaintDevice;
 import net.sf.sdedit.ui.components.configuration.Bean;
+import net.sf.sdedit.util.DocUtil;
 import net.sf.sdedit.util.DocUtil.XMLException;
 import net.sf.sdedit.util.ObjectFactory;
 import net.sf.sdedit.util.Pair;
 
 import org.apache.commons.io.FilenameUtils;
+import org.w3c.dom.Document;
 
 public class SdEditImageGenerator implements ImageGenerator {
 
+	private static final String SDEDIT_CONF = "sdedit.conf";
+	private String docdir;
+
+	public SdEditImageGenerator(String docdir) {
+		this.docdir = docdir;
+	}
+
 	private static final int MAX_FILES_WITH_SAME_NAME = 1000;
-	private static final String DEFAULT_FORMAT_A4 = "A4";
-	private static final String ORIENTATION_ATTRIBUTE = "orientation";
-	private static final String PORTRAIT_ORIENTATION = "Portrait";
-	private static final String LANDSCAPE_ORIENTATION = "Landscape";
+	public static final String DEFAULT_FORMAT_A4 = "A4";
+	public static final String ORIENTATION_ATTRIBUTE = "orientation";
+	public static final String PORTRAIT_ORIENTATION = "Portrait";
+	public static final String LANDSCAPE_ORIENTATION = "Landscape";
 	public static final String OUTPUTFILENAME_ATTRIBUTE = "outputfilename";
 	public static final String FORMAT_ATTRIBUTE = "format";
 	public static final String TYPE_ATTRIBUTE = "type";
@@ -123,6 +132,8 @@ public class SdEditImageGenerator implements ImageGenerator {
 			orientation = orientation.substring(0, 1).toUpperCase()
 					+ orientation.substring(1);
 		}
+
+		Bean<Configuration> fileConf = loadConfFromSdeditConf(attributes);
 		OutputStream out = null;
 		try {
 			out = new FileOutputStream(outFile);
@@ -131,7 +142,8 @@ public class SdEditImageGenerator implements ImageGenerator {
 						ConfigurationManager.getGlobalConfiguration()
 								.getFileEncoding());
 				TextHandler th = new TextHandler(pair.getFirst());
-				Bean<Configuration> conf = pair.getSecond();
+				Bean<Configuration> conf = fileConf != null ? fileConf : pair
+						.getSecond();
 				configure(conf, attributes);
 				if (type.equals("png")) {
 					ImagePaintDevice paintDevice = new ImagePaintDevice();
@@ -154,7 +166,32 @@ public class SdEditImageGenerator implements ImageGenerator {
 		}
 	}
 
-	private void configure(Bean<Configuration> conf, Map<?, Object> attributes) {
+	private Bean<Configuration> loadConfFromSdeditConf(
+			Map<String, Object> attributes) throws FileNotFoundException,
+			IOException, XMLException {
+		Bean<Configuration> fileConf = new Bean<Configuration>(
+				Configuration.class, null);
+		String configFileName = AsciidoctorHelpers.getAttribute(attributes,
+				"sdeditconf", null, true);
+		if (configFileName == null) {
+			configFileName = SDEDIT_CONF;
+		}
+		File configFile = null;
+		if (docdir == null) {
+			configFile = new File(configFileName);
+		} else {
+			configFile = new File(docdir, configFileName);
+		}
+		if (configFile.exists()) {
+			InputStream stream = new FileInputStream(configFile);
+			Document document = DocUtil.readDocument(stream, "UTF-8");
+			fileConf.load(document, "/sdedit-configuration/default-settings");
+		}
+		return fileConf;
+	}
+
+	private void configure(Bean<Configuration> conf,
+			Map<String, Object> attributes) {
 		for (Object optionKeyObject : attributes.keySet()) {
 			if (optionKeyObject instanceof String) {
 				String optionKey = (String) optionKeyObject;
@@ -163,8 +200,7 @@ public class SdEditImageGenerator implements ImageGenerator {
 				if (property != null) {
 					Object value = ObjectFactory.createFromString(property
 							.getPropertyType(), AsciidoctorHelpers
-							.getAttribute((Map<String, Object>) attributes,
-									optionKey, "", true));
+							.getAttribute(attributes, optionKey, "", true));
 					conf.setValue(property, value);
 				}
 			}

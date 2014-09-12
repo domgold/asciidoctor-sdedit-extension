@@ -26,13 +26,19 @@ public class SdEditIncludeprocessor extends IncludeProcessor {
 	public void process(DocumentRuby document, PreprocessorReader reader,
 			String target, Map<String, Object> attributes) {
 		target = target.substring(7);
-		ImageGenerator imgGenerator = new SdEditImageGenerator();
 		Map<String, Object> docAttrs = document.getAttributes();
+		String docdir = AsciidoctorHelpers.getAttribute(docAttrs, "docdir",
+				null, false);
+		ImageGenerator imgGenerator = new SdEditImageGenerator(docdir);
 		document.attributes();
-		String outputFilename = imgGenerator.generateImage(
-				new File(AsciidoctorHelpers.getAttribute(docAttrs, "docdir",
-						null, false), target), AsciidoctorHelpers
-						.getImageDir(docAttrs), attributes);
+		String outputFilename = "missing.png";
+		try {
+			outputFilename = imgGenerator.generateImage(
+					new File(docdir, target),
+					AsciidoctorHelpers.getImageDir(docAttrs), attributes);
+		} catch (Exception ex) {
+			// ignore we return missing.png
+		}
 		reader.push_include("image::" + outputFilename + "[]", target, target,
 				1, attributes);
 	}

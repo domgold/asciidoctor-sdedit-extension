@@ -1,5 +1,5 @@
 # language: en
-Feature: sdedit block
+Feature: SdEdit block
   The sdedit block processor allows to process asciidoc blocks with sdedit content and output an image.
 
   Scenario: Using the block processor
@@ -9,7 +9,7 @@ Feature: sdedit block
       
       A simple sequence diagram rendered as png.
       
-      [sdedit,outputnamefromargument,png]
+      [sdedit]
       ----
       bfs:BFS[a]
       /queue:FIFO
@@ -21,9 +21,30 @@ Feature: sdedit block
     When I register the SdEditBlockProcessor
     And I render the asciidoctor content to html
     Then the rendered file contains the following text snippets:
-      | <img                       |
-      | outputnamefromargument.png |
-    And the file "outputnamefromargument.png" exists in the output directory.
+      | <img       |
+      | sdedit.png |
+    And the file "sdedit.png" exists in the output directory.
+
+  Scenario: Try to render content with syntax error
+    Given the following asciidoctor content
+      """
+      = Title
+      
+      A simple sequence diagram with syntax error rendered as png.
+      
+      [sdedit]
+      ----
+      bfs:BFS[a]
+      /queue:FIFO
+      
+      bfsqueue.new
+      ----
+      """
+    When I register the SdEditBlockProcessor
+    And I render the asciidoctor content to html
+    Then the rendered file contains the following text snippets:
+      | <img        |
+      | missing.png |
 
   Scenario: Using the block processor with a complex sdedit diagram block
     Given the following asciidoctor content
@@ -34,7 +55,7 @@ Feature: sdedit block
       
       A simple sequence diagram rendered as svg.
       
-      [sdedit,type=svg]
+      [sdedit,foo,svg]
       ----
       bfs:BFS[a]
       /queue:FIFO
@@ -68,6 +89,6 @@ Feature: sdedit block
     When I register the SdEditBlockProcessor
     And I render the asciidoctor content to html
     Then the rendered file contains the following text snippets:
-      | <img       |
-      | sdedit.svg |
-    And the file "sdedit.svg" exists in the output directory.
+      | <img    |
+      | foo.svg |
+    And the file "foo.svg" exists in the output directory.
