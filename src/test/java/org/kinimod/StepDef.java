@@ -18,6 +18,7 @@ import org.junit.rules.TemporaryFolder;
 import org.kinimod.asciidoctor.sdedit.SdEditBlockMacroProcessor;
 import org.kinimod.asciidoctor.sdedit.SdEditBlockProcessor;
 
+import cucumber.api.Scenario;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -32,6 +33,11 @@ public class StepDef {
 	private TemporaryFolder folder;
 	private File outputFolder;
 	private File inputFolder;
+	
+	@Before
+	public void scenario(Scenario scenario) {
+		
+	}
 
 	@Before
 	public void reset() throws IOException {
@@ -87,14 +93,18 @@ public class StepDef {
 			List<String> snippets) throws Throwable {
 		String content = FileUtils.readFileToString(asciidocOutputFile);
 		for (String snippet : snippets) {
-			assertTrue(content.contains(snippet));
+			assertTrue(String.format("%s expected in :\n%s", snippet, content),
+					content.contains(snippet));
 		}
 	}
 
 	@Then("^the file \"(.*?)\" exists in the output directory\\.$")
 	public void the_file_exists_in_the_output_directory(String arg1)
 			throws Throwable {
-		assertTrue(new File(outputFolder, arg1).exists());
+		File file = new File(outputFolder, arg1);
+		assertTrue(
+				String.format("File expected to exist: %s",
+						file.getAbsolutePath()), file.exists());
 	}
 
 }

@@ -90,7 +90,6 @@
 
 	<build>
 		<plugins>
-
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
@@ -108,4 +107,62 @@
 			</plugin>
 		</plugins>
 	</build>
+	<profiles>
+		<profile>
+			<!-- Use this profil to update the sdedit_parameters.feature -->
+			<id>write-sdedit-parameters-feature</id>
+			<activation>
+				<property>
+					<name>write-sdedit-parameters-feature</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.groovy.maven</groupId>
+						<artifactId>gmaven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>write-sdedit-parameters-feature</id>
+								<phase>process-resources</phase>
+								<goals>
+									<goal>execute</goal>
+								</goals>
+								<configuration>
+									<source>
+										String confFileContent = this.getClass().getResource( '/net/sf/sdedit/config/default.conf' ).text
+			
+										def template_content = new File(project.build.testOutputDirectory, "../../src/test/resources/org/kinimod/sdedit_parameters.feature_template").text
+										def outputParentDir = new File(project.build.testOutputDirectory, "../../src/test/resources/org/kinimod/")
+										outputParentDir.exists() || outputParentDir.mkdirs()
+										def outputFile = new File(outputParentDir, "sdedit_parameters.feature")
+
+										def engine = new groovy.text.SimpleTemplateEngine()
+										def template = engine.createTemplate(template_content)
+										
+										def conf = new XmlParser().parseText(confFileContent)
+
+										def params_all = conf["default-settings"].first().children().findAll() { it.attribute('name') != null }
+										def params_with_value = params_all.findAll() { it.attribute('value') != null }
+										
+										//a little hack here : asciidoctor gets confused with attributes containing numbers (see https://github.com/asciidoctor/asciidoctorj/issues/203)
+										def params_hack_no_numbers = params_with_value.findAll() {  it.attribute('name') ==~ /[A-Za-z]+/ }
+										
+										
+										def binding=[parameters: params_hack_no_numbers]
+
+										outputFile.withWriter { out ->
+											out.write(template.make(binding))
+										}
+										
+										println "Updated feature"
+									</source>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
