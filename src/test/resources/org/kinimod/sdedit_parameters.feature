@@ -1,7 +1,7 @@
 # language: en
 Feature: sdedit block
-  As a asciidoc write
-  I want to be able to use all sdedit configuration parameters
+  As an asciidoc write
+  I want to pass in configuration parameters using an sdedit configuration file.
 
   Scenario Outline: Use sdedit configuration parameters
     Given the following asciidoctor content

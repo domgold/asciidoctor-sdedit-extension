@@ -17,7 +17,9 @@
 	<description>asciidoctor-sdedit-extension provides an extension for creating sequence diagrams in asciidoctor using sdedit.</description>
 	<licenses>
 		<license>
-			<name>Apache License Version 2.0</name>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
 		</license>
 	</licenses>
 	<properties>
@@ -121,6 +123,7 @@
 					<plugin>
 						<groupId>org.codehaus.groovy.maven</groupId>
 						<artifactId>gmaven-plugin</artifactId>
+						<version>1.0</version>
 						<executions>
 							<execution>
 								<id>write-sdedit-parameters-feature</id>
@@ -129,34 +132,7 @@
 									<goal>execute</goal>
 								</goals>
 								<configuration>
-									<source>
-										String confFileContent = this.getClass().getResource( '/net/sf/sdedit/config/default.conf' ).text
-			
-										def template_content = new File(project.build.testOutputDirectory, "../../src/test/resources/org/kinimod/sdedit_parameters.feature_template").text
-										def outputParentDir = new File(project.build.testOutputDirectory, "../../src/test/resources/org/kinimod/")
-										outputParentDir.exists() || outputParentDir.mkdirs()
-										def outputFile = new File(outputParentDir, "sdedit_parameters.feature")
-
-										def engine = new groovy.text.SimpleTemplateEngine()
-										def template = engine.createTemplate(template_content)
-										
-										def conf = new XmlParser().parseText(confFileContent)
-
-										def params_all = conf["default-settings"].first().children().findAll() { it.attribute('name') != null }
-										def params_with_value = params_all.findAll() { it.attribute('value') != null }
-										
-										//a little hack here : asciidoctor gets confused with attributes containing numbers (see https://github.com/asciidoctor/asciidoctorj/issues/203)
-										def params_hack_no_numbers = params_with_value.findAll() {  it.attribute('name') ==~ /[A-Za-z]+/ }
-										
-										
-										def binding=[parameters: params_hack_no_numbers]
-
-										outputFile.withWriter { out ->
-											out.write(template.make(binding))
-										}
-										
-										println "Updated feature"
-									</source>
+									<source>${basedir}/src/main/groovy/WriteSdEditParametersFeature.groovy</source>
 								</configuration>
 							</execution>
 						</executions>
@@ -165,4 +141,55 @@
 			</build>
 		</profile>
 	</profiles>
+	<reporting>
+		<plugins>
+			<plugin>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.10</version>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>checkstyle</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+			<plugin>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>3.0.1</version>
+				<configuration>
+					<targetJdk>1.6</targetJdk>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<check>false</check>
+					<quiet>true</quiet>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-jxr-plugin</artifactId>
+				<version>2.3</version>
+				<configuration>
+					<aggregate>true</aggregate>
+					<linkJavadoc>true</linkJavadoc>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>2.17</version>
+				<configuration>
+					<aggregate>true</aggregate>
+					<linkXRef>true</linkXRef>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>2.7</version>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>

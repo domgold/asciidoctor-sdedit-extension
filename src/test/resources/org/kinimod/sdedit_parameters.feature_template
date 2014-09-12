@@ -1,7 +1,7 @@
 # language: en
 Feature: sdedit block
-  As a asciidoc write
-  I want to be able to use all sdedit configuration parameters
+  As an asciidoc write
+  I want to pass in configuration parameters using an sdedit configuration file.
 
   Scenario Outline: Use sdedit configuration parameters
     Given the following asciidoctor content
@@ -35,14 +35,15 @@ Feature: sdedit block
     When I register the SdEditBlockProcessor
     And I render the asciidoctor content to html
     Then the rendered file contains the following text snippets:
-      | <img             |
+      | <img                 |
       | <parameter_name>.png |
     And the file "<parameter_name>.png" exists in the output directory.
 
     Examples: 
-      | parameter_name | parameter_value |<% parameters.each { %>
-      | ${it.attribute('name')} | ${it.attribute('value')} |
+      | parameter_name          | parameter_value          |
+<% parameters.each { %>      | ${it.attribute('name')} | ${it.attribute('value')} |
 <%}%>
+
   Scenario: Use all sdedit configuration parameters
     Given the following asciidoctor content
       """
