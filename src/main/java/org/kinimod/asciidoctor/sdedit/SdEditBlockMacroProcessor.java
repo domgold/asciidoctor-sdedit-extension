@@ -16,7 +16,7 @@ public class SdEditBlockMacroProcessor extends BlockMacroProcessor {
 	private static Map<String, Object> configs = new HashMap<String, Object>() {
 		{
 			// put("contexts", Arrays.asList(":listing", ":literal", ":open"));
-			put("content_model", ":simple");
+			put("content_model", ":attributes");
 			put("pos_attrs", Arrays.asList(
 					SdEditImageGenerator.OUTPUTFILENAME_ATTRIBUTE,
 					SdEditImageGenerator.TYPE_ATTRIBUTE,
@@ -32,12 +32,7 @@ public class SdEditBlockMacroProcessor extends BlockMacroProcessor {
 	@Override
 	protected Object process(AbstractBlock parent, String target,
 			Map<String, Object> attributes) {
-		// FIXME hack because in 1.5.0 attributes only contains a 'text' key,
-		// not the real keys
-		if (attributes.containsKey("text")) {
-			attributes = hackConvertWrongAttributes(AsciidoctorHelpers
-					.getAttribute(attributes, "text", "", true));
-		}
+
 		String outputFileName = "missing.png";
 		try {
 			Map<String, Object> docAttributes = parent.document()
