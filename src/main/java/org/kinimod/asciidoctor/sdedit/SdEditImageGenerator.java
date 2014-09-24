@@ -166,11 +166,20 @@ public class SdEditImageGenerator implements ImageGenerator {
 		}
 	}
 
+	/**
+	 * Loads SdEdit configuration from a file.
+	 * <p>If the attributes map contains an attribute named "sdeditconf", it tries to load this configuration.</p>
+	 * <p>If no such attribute is provided, we try to load configuration from a file called {@value #SDEDIT_CONF}.
+	 * 
+	 * @param attributes A map containing Asciidoctor attributes.
+	 * @return An object representing the configuration loaded from the file, 
+	 * or <code>null</code> if the provided file or the default file does not exist.
+	 * @throws IOException 
+	 * @throws XMLException
+	 */
 	private Bean<Configuration> loadConfFromSdeditConf(
-			Map<String, Object> attributes) throws FileNotFoundException,
+			Map<String, Object> attributes) throws 
 			IOException, XMLException {
-		Bean<Configuration> fileConf = new Bean<Configuration>(
-				Configuration.class, null);
 		String configFileName = AsciidoctorHelpers.getAttribute(attributes,
 				"sdeditconf", null, true);
 		if (configFileName == null) {
@@ -185,9 +194,14 @@ public class SdEditImageGenerator implements ImageGenerator {
 		if (configFile.exists()) {
 			InputStream stream = new FileInputStream(configFile);
 			Document document = DocUtil.readDocument(stream, "UTF-8");
+			Bean<Configuration> fileConf = new Bean<Configuration>(
+					Configuration.class, null);
 			fileConf.load(document, "/sdedit-configuration/default-settings");
+			return fileConf;
+		} else {
+			return null;
 		}
-		return fileConf;
+		
 	}
 
 	private void configure(Bean<Configuration> conf,
