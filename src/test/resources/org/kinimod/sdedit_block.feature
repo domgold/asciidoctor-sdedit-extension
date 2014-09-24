@@ -43,8 +43,8 @@ Feature: SdEdit block
     When I register the SdEditBlockProcessor
     And I render the asciidoctor content to html
     Then the rendered file contains the following text snippets:
-      | <img        |
-      | missing.png |
+      | <img      |
+      | error.png |
 
   Scenario: Using the block processor with a complex sdedit diagram block
     Given the following asciidoctor content

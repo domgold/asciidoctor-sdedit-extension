@@ -10,12 +10,24 @@ import org.apache.commons.io.FilenameUtils;
 import org.asciidoctor.ast.AbstractBlock;
 import org.asciidoctor.extension.BlockMacroProcessor;
 
+/**
+ * Defines a block macro.
+ * <p>
+ * Processes sdedit markup files to png or svg images.
+ * </p>
+ * 
+ * @author Dominik
+ */
 public class SdEditBlockMacroProcessor extends BlockMacroProcessor {
+
+	/**
+	 * The block macro's name as a constant.
+	 */
+	public static final String SDEDIT_BLOCK_MACRO_NAME = "sdedit";
 
 	@SuppressWarnings("serial")
 	private static Map<String, Object> configs = new HashMap<String, Object>() {
 		{
-			// put("contexts", Arrays.asList(":listing", ":literal", ":open"));
 			put("content_model", ":attributes");
 			put("pos_attrs", Arrays.asList(
 					SdEditImageGenerator.OUTPUTFILENAME_ATTRIBUTE,
@@ -52,24 +64,11 @@ public class SdEditBlockMacroProcessor extends BlockMacroProcessor {
 					AsciidoctorHelpers.getImageDir(docAttributes), attributes);
 
 		} catch (Exception e) {
-			// ignore we output missing.png
+			outputFileName = "error.png";
 		}
 		return AsciidoctorHelpers.createImageBlock(outputFileName, attributes,
 				parent, this);
 
-	}
-
-	private Map<String, Object> hackConvertWrongAttributes(String object) {
-		Map<String, Object> newMap = new HashMap<String, Object>();
-
-		String[] args = object.split(",");
-		for (String arg : args) {
-			String[] keyValue = arg.split("=");
-			if (keyValue.length > 1) {
-				newMap.put(keyValue[0], keyValue[1]);
-			}
-		}
-		return newMap;
 	}
 
 }

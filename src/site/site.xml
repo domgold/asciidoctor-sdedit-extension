@@ -1,0 +1,8 @@
+<project name="${project.name}">
+	<body>
+		<menu name="Main">
+			<item name="Overview" href="index.html" />
+		</menu>
+		<menu ref="reports"/>
+	</body>
+</project>

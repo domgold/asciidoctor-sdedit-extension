@@ -88,13 +88,15 @@ public class StepDef {
 
 	@When("^I register the SdEditBlockProcessor$")
 	public void i_register_the_SdEditBlockProcessor() throws Throwable {
-		asciidoctor.javaExtensionRegistry().block("sdedit",
+		asciidoctor.javaExtensionRegistry().block(
+				SdEditBlockProcessor.SDEDIT_BLOCK_NAME,
 				SdEditBlockProcessor.class);
 	}
 
 	@When("^I register the SdEditBlockMacroProcessor$")
 	public void i_register_the_SdEditBlockMacroProcessor() throws Throwable {
-		asciidoctor.javaExtensionRegistry().blockMacro("sdedit",
+		asciidoctor.javaExtensionRegistry().blockMacro(
+				SdEditBlockMacroProcessor.SDEDIT_BLOCK_MACRO_NAME,
 				SdEditBlockMacroProcessor.class);
 	}
 

@@ -47,8 +47,8 @@ Feature: Sdedit block macro
     When I register the SdEditBlockMacroProcessor
     And I render the asciidoctor content to html
     Then the rendered file contains the following text snippets:
-      | <img        |
-      | missing.png |
+      | <img      |
+      | error.png |
 
   Scenario: File with syntax error
     Given the following asciidoctor content
@@ -71,5 +71,5 @@ Feature: Sdedit block macro
     When I register the SdEditBlockMacroProcessor
     And I render the asciidoctor content to html
     Then the rendered file contains the following text snippets:
-      | <img        |
-      | missing.png |
+      | <img      |
+      | error.png |

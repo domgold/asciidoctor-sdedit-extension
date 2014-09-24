@@ -15,7 +15,7 @@ include::sdedit:testdiagram.sd[arrowColor=0,returnArrowVisible=false]
 * When I set up a sdedit block
 +
 .testdiagram => block
-[sdedit,arrowColor=0,returnArrowVisible=false,target=fromblock,type=svg,outputfilename=fromblock]
+[sdedit,arrowColor=0,returnArrowVisible=false,target=fromblock,type=svg,filename=fromblock]
 ....
 include::testdiagram.sd[]
 ....

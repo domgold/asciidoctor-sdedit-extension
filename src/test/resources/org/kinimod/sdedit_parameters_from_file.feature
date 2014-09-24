@@ -8,7 +8,7 @@ Feature: SdEdit parameters from file.
       """
       = Title
             
-      [sdedit,outputfilename=filename,type=svg<conf_attribute>]
+      [sdedit,filename=filename,type=svg<conf_attribute>]
       ----
       bfs:BFS[a]
       /queue:FIFO
@@ -31,6 +31,6 @@ Feature: SdEdit parameters from file.
       | disabling             | 0          | sdedit.conf |                |
 
     Examples: with attribute => from docdir with provided name
-      | enabling_or_disabling | num_arrows | config_file | conf_attribute      |
-      | enabling              | 1          | my.conf     | ,sdeditconf=my.conf |
-      | disabling             | 0          | my.conf     | ,sdeditconf=my.conf |
+      | enabling_or_disabling | num_arrows | config_file | conf_attribute |
+      | enabling              | 1          | my.conf     | ,conf=my.conf  |
+      | disabling             | 0          | my.conf     | ,conf=my.conf  |

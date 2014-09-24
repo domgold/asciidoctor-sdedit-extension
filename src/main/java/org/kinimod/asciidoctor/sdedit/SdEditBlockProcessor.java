@@ -10,6 +10,8 @@ import org.asciidoctor.extension.Reader;
 
 public class SdEditBlockProcessor extends BlockProcessor {
 
+	public static final String SDEDIT_BLOCK_NAME = "sdedit";
+
 	@SuppressWarnings("serial")
 	private static Map<String, Object> configs = new HashMap<String, Object>() {
 		{
@@ -39,7 +41,7 @@ public class SdEditBlockProcessor extends BlockProcessor {
 			outputFileName = generator.generateImage(content,
 					AsciidoctorHelpers.getImageDir(docAttributes), attributes);
 		} catch (Exception ex) {
-			// ignore we return missing.png
+			outputFileName = "error.png";
 		}
 		return AsciidoctorHelpers.createImageBlock(outputFileName, attributes,
 				parent, this);

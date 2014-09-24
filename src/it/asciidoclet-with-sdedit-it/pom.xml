@@ -1,0 +1,63 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.github.domgold</groupId>
+	<artifactId>asciidoclet-with-sdedit-it</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>asciidoclet-with-sdedit-it</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.asciidoctor</groupId>
+				<artifactId>asciidoclet</artifactId>
+				<version>@project.version@</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<source>1.6</source>
+					<doclet>org.asciidoctor.Asciidoclet</doclet>
+					<docletArtifacts>
+						<docletArtifact>
+							<groupId>org.asciidoctor</groupId>
+							<artifactId>asciidoclet</artifactId>
+							<version>1.5.0</version>
+						</docletArtifact>
+						<docletArtifact>
+							<groupId>com.github.domgold</groupId>
+							<artifactId>asciidoctor-sdedit-extension</artifactId>
+							<version>0.1.0</version>
+						</docletArtifact>
+					</docletArtifacts>
+					<additionalparam>
+					</additionalparam>
+				</configuration>
+				<executions>
+					<execution>
+						<id>javadoc</id>
+						<phase>test</phase>
+						<goals>
+							<goal>javadoc</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

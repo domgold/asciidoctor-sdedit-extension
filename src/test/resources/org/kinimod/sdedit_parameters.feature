@@ -13,7 +13,7 @@ Feature: sdedit block
       The following source :
       
       ....
-      [sdedit,<parameter_name>=<parameter_value>,outputfilename=<parameter_name>]
+      [sdedit,<parameter_name>=<parameter_value>,filename=<parameter_name>]
       ----
       bfs:BFS[a]
       /queue:FIFO
@@ -23,7 +23,7 @@ Feature: sdedit block
       ----
       ....
            
-      [sdedit,<parameter_name>=<parameter_value>,outputfilename=<parameter_name>]
+      [sdedit,<parameter_name>=<parameter_value>,filename=<parameter_name>]
       ----
       bfs:BFS[a]
       /queue:FIFO
@@ -89,7 +89,7 @@ Feature: sdedit block
       The following source :
       
       ....
-      [sdedit,actorWidth=25,allowMessageProperties=false,arrowSize=6,colorizeThreads=true,fragmentMargin=8,fragmentPadding=10,fragmentTextPadding=3,noteMargin=6,notePadding=6,destructorWidth=30,glue=10,headHeight=35,headLabelPadding=5,headWidth=100,initialSpace=10,leftMargin=5,lineWrap=false,lowerMargin=5,mainLifelineWidth=8,messageLabelSpace=3,messagePadding=6,opaqueMessageText=false,returnArrowVisible=true,rightMargin=5,selfMessageHorizontalSpace=15,separatorBottomMargin=8,separatorTopMargin=15,shouldShadowParticipants=true,spaceBeforeActivation=2,spaceBeforeAnswerToSelf=10,spaceBeforeConstruction=6,spaceBeforeSelfMessage=7,subLifelineWidth=6,threadNumbersVisible=false,threaded=true,upperMargin=5,verticallySplit=true,outputfilename=test]
+      [sdedit,actorWidth=25,allowMessageProperties=false,arrowSize=6,colorizeThreads=true,fragmentMargin=8,fragmentPadding=10,fragmentTextPadding=3,noteMargin=6,notePadding=6,destructorWidth=30,glue=10,headHeight=35,headLabelPadding=5,headWidth=100,initialSpace=10,leftMargin=5,lineWrap=false,lowerMargin=5,mainLifelineWidth=8,messageLabelSpace=3,messagePadding=6,opaqueMessageText=false,returnArrowVisible=true,rightMargin=5,selfMessageHorizontalSpace=15,separatorBottomMargin=8,separatorTopMargin=15,shouldShadowParticipants=true,spaceBeforeActivation=2,spaceBeforeAnswerToSelf=10,spaceBeforeConstruction=6,spaceBeforeSelfMessage=7,subLifelineWidth=6,threadNumbersVisible=false,threaded=true,upperMargin=5,verticallySplit=true,filename=test]
       ----
       bfs:BFS[a]
       /queue:FIFO
@@ -99,7 +99,7 @@ Feature: sdedit block
       ----
       ....
            
-      [sdedit,actorWidth=25,allowMessageProperties=false,arrowSize=6,colorizeThreads=true,fragmentMargin=8,fragmentPadding=10,fragmentTextPadding=3,noteMargin=6,notePadding=6,destructorWidth=30,glue=10,headHeight=35,headLabelPadding=5,headWidth=100,initialSpace=10,leftMargin=5,lineWrap=false,lowerMargin=5,mainLifelineWidth=8,messageLabelSpace=3,messagePadding=6,opaqueMessageText=false,returnArrowVisible=true,rightMargin=5,selfMessageHorizontalSpace=15,separatorBottomMargin=8,separatorTopMargin=15,shouldShadowParticipants=true,spaceBeforeActivation=2,spaceBeforeAnswerToSelf=10,spaceBeforeConstruction=6,spaceBeforeSelfMessage=7,subLifelineWidth=6,threadNumbersVisible=false,threaded=true,upperMargin=5,verticallySplit=true,outputfilename=test]
+      [sdedit,actorWidth=25,allowMessageProperties=false,arrowSize=6,colorizeThreads=true,fragmentMargin=8,fragmentPadding=10,fragmentTextPadding=3,noteMargin=6,notePadding=6,destructorWidth=30,glue=10,headHeight=35,headLabelPadding=5,headWidth=100,initialSpace=10,leftMargin=5,lineWrap=false,lowerMargin=5,mainLifelineWidth=8,messageLabelSpace=3,messagePadding=6,opaqueMessageText=false,returnArrowVisible=true,rightMargin=5,selfMessageHorizontalSpace=15,separatorBottomMargin=8,separatorTopMargin=15,shouldShadowParticipants=true,spaceBeforeActivation=2,spaceBeforeAnswerToSelf=10,spaceBeforeConstruction=6,spaceBeforeSelfMessage=7,subLifelineWidth=6,threadNumbersVisible=false,threaded=true,upperMargin=5,verticallySplit=true,filename=test]
       ----
       bfs:BFS[a]
       /queue:FIFO

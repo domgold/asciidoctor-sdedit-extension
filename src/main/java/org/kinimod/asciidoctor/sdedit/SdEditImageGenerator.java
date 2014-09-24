@@ -26,7 +26,6 @@ import net.sf.sdedit.util.DocUtil.XMLException;
 import net.sf.sdedit.util.ObjectFactory;
 import net.sf.sdedit.util.Pair;
 
-import org.apache.commons.io.FilenameUtils;
 import org.w3c.dom.Document;
 
 public class SdEditImageGenerator implements ImageGenerator {
@@ -43,33 +42,11 @@ public class SdEditImageGenerator implements ImageGenerator {
 	public static final String ORIENTATION_ATTRIBUTE = "orientation";
 	public static final String PORTRAIT_ORIENTATION = "Portrait";
 	public static final String LANDSCAPE_ORIENTATION = "Landscape";
-	public static final String OUTPUTFILENAME_ATTRIBUTE = "outputfilename";
+	public static final String OUTPUTFILENAME_ATTRIBUTE = "filename";
 	public static final String FORMAT_ATTRIBUTE = "format";
 	public static final String TYPE_ATTRIBUTE = "type";
+	public static final String CONF_ATTRIBUTE = "conf";
 	public static final String DEFAULT_TYPE_PNG = "png";
-
-	@Override
-	public String generateImage(File inputFile, File outputDir,
-			Map<String, Object> attributes) {
-
-		String inputFileNameWithoutExtension = FilenameUtils
-				.getBaseName(inputFile.getAbsolutePath());
-
-		String type = AsciidoctorHelpers.getAttribute(attributes,
-				TYPE_ATTRIBUTE, DEFAULT_TYPE_PNG, false);
-		String outputFileName = AsciidoctorHelpers.getAttribute(attributes,
-				OUTPUTFILENAME_ATTRIBUTE, inputFileNameWithoutExtension, true);
-
-		File outputFile = getUniqueOutputFilename(outputDir, outputFileName,
-				type);
-
-		try {
-			createImageFromFile(inputFile, outputFile, attributes);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-		return outputFile.getName();
-	}
 
 	private File getUniqueOutputFilename(File outputDir, String outputFileName,
 			String type) {
@@ -103,14 +80,6 @@ public class SdEditImageGenerator implements ImageGenerator {
 		return outputFile.getName();
 	}
 
-	private void createImageFromFile(File inFile, File outFile,
-			Map<String, Object> attributes) throws IOException, XMLException,
-			SyntaxError, SemanticError {
-		InputStream in = null;
-		in = new FileInputStream(inFile);
-		createImageFromInputStream(outFile, attributes, in);
-	}
-
 	private void createImageFromString(String content, File outFile,
 			Map<String, Object> attributes) throws FileNotFoundException,
 			SemanticError, SyntaxError, IOException, XMLException {
@@ -136,6 +105,10 @@ public class SdEditImageGenerator implements ImageGenerator {
 		Bean<Configuration> fileConf = loadConfFromSdeditConf(attributes);
 		OutputStream out = null;
 		try {
+			if (!outFile.getParentFile().exists()
+					&& !outFile.getParentFile().mkdirs()) {
+				throw new IOException("Cannot create output parent dir");
+			}
 			out = new FileOutputStream(outFile);
 			try {
 				Pair<String, Bean<Configuration>> pair = DiagramLoader.load(in,
@@ -168,7 +141,7 @@ public class SdEditImageGenerator implements ImageGenerator {
 
 	/**
 	 * Loads SdEdit configuration from a file.
-	 * <p>If the attributes map contains an attribute named "sdeditconf", it tries to load this configuration.</p>
+	 * <p>If the attributes map contains an attribute named "conf", it tries to load this configuration.</p>
 	 * <p>If no such attribute is provided, we try to load configuration from a file called {@value #SDEDIT_CONF}.
 	 * 
 	 * @param attributes A map containing Asciidoctor attributes.
@@ -178,10 +151,9 @@ public class SdEditImageGenerator implements ImageGenerator {
 	 * @throws XMLException
 	 */
 	private Bean<Configuration> loadConfFromSdeditConf(
-			Map<String, Object> attributes) throws 
-			IOException, XMLException {
+			Map<String, Object> attributes) throws IOException, XMLException {
 		String configFileName = AsciidoctorHelpers.getAttribute(attributes,
-				"sdeditconf", null, true);
+				CONF_ATTRIBUTE, null, true);
 		if (configFileName == null) {
 			configFileName = SDEDIT_CONF;
 		}
@@ -201,7 +173,7 @@ public class SdEditImageGenerator implements ImageGenerator {
 		} else {
 			return null;
 		}
-		
+
 	}
 
 	private void configure(Bean<Configuration> conf,

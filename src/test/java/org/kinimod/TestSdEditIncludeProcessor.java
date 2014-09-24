@@ -16,7 +16,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.kinimod.asciidoctor.sdedit.SdEditBlockProcessor;
-import org.kinimod.asciidoctor.sdedit.SdEditIncludeprocessor;
 import org.kinimod.asciidoctor.sdedit.SdEditBlockMacroProcessor;
 
 /**
@@ -26,17 +25,17 @@ import org.kinimod.asciidoctor.sdedit.SdEditBlockMacroProcessor;
 public class TestSdEditIncludeProcessor {
 
 	@Rule
-	public TemporaryFolder folder = new TemporaryFolder();
+	public TemporaryFolder folder = new TemporaryFolder(new File("target"));
 
 	@Test
 	public void test() throws IOException {
 		folder.create();
 		Asciidoctor asciidoctor = Asciidoctor.Factory.create();
-		asciidoctor.javaExtensionRegistry().includeProcessor(
-				SdEditIncludeprocessor.class);
-		asciidoctor.javaExtensionRegistry().block("sdedit",
+		asciidoctor.javaExtensionRegistry().block(
+				SdEditBlockProcessor.SDEDIT_BLOCK_NAME,
 				SdEditBlockProcessor.class);
-		asciidoctor.javaExtensionRegistry().blockMacro("sdedit",
+		asciidoctor.javaExtensionRegistry().blockMacro(
+				SdEditBlockMacroProcessor.SDEDIT_BLOCK_MACRO_NAME,
 				SdEditBlockMacroProcessor.class);
 		File baseDir = new File("src/test/resources");
 		File adoc = new File(baseDir, "sdinclude.adoc");

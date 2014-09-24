@@ -15,13 +15,21 @@
 
 	<name>asciidoctor-sdedit-extension</name>
 	<description>asciidoctor-sdedit-extension provides an extension for creating sequence diagrams in asciidoctor using sdedit.</description>
+	<url>https://github.com/domgold/asciidoctor-sdedit-extension</url>
+	<issueManagement>
+		<system>github</system>
+		<url>https://github.com/domgold/asciidoctor-sdedit-extension/issues</url>
+	</issueManagement>
 	<licenses>
 		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
+			<name>Apache License Version 2.0</name>
 		</license>
 	</licenses>
+	<scm>
+		<connection>scm:git:git@github.com:domgold/asciidoctor-sdedit-extension.git</connection>
+		<developerConnection>scm:git:git@github.com:domgold/asciidoctor-sdedit-extension.git</developerConnection>
+		<url>scm:git:git@github.com:domgold/asciidoctor-sdedit-extension.git</url>
+	</scm>
 	<properties>
 		<asciidoctor.version>1.5.0</asciidoctor.version>
 		<junit.version>4.11</junit.version>
@@ -107,9 +115,49 @@
 					<downloadJavadoc>true</downloadJavadoc>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.2</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.asciidoctor</groupId>
+						<artifactId>asciidoctor-maven-plugin</artifactId>
+						<version>1.5.0</version>
+					</dependency>
+				</dependencies>
+			</plugin>
 		</plugins>
 	</build>
 	<profiles>
+		<profile>
+			<id>run-it</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-invoker-plugin</artifactId>
+						<configuration>
+							<debug>true</debug>
+							<projectsDirectory>src/it</projectsDirectory>
+							<cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+							<pomIncludes>
+								<pomInclude>**/pom.xml</pomInclude>
+							</pomIncludes>
+							<postBuildHookScript>verify</postBuildHookScript>
+						</configuration>
+						<executions>
+							<execution>
+								<phase>integration-test</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 		<profile>
 			<!-- Use this profil to update the sdedit_parameters.feature -->
 			<id>write-sdedit-parameters-feature</id>
@@ -143,17 +191,6 @@
 	</profiles>
 	<reporting>
 		<plugins>
-			<plugin>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>2.10</version>
-				<reportSets>
-					<reportSet>
-						<reports>
-							<report>checkstyle</report>
-						</reports>
-					</reportSet>
-				</reportSets>
-			</plugin>
 			<plugin>
 				<artifactId>maven-pmd-plugin</artifactId>
 				<version>3.0.1</version>

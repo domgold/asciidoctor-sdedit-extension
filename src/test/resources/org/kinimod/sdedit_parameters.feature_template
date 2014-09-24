@@ -13,7 +13,7 @@ Feature: sdedit block
       The following source :
       
       ....
-      [sdedit,<parameter_name>=<parameter_value>,outputfilename=<parameter_name>]
+      [sdedit,<parameter_name>=<parameter_value>,filename=<parameter_name>]
       ----
       bfs:BFS[a]
       /queue:FIFO
@@ -23,7 +23,7 @@ Feature: sdedit block
       ----
       ....
            
-      [sdedit,<parameter_name>=<parameter_value>,outputfilename=<parameter_name>]
+      [sdedit,<parameter_name>=<parameter_value>,filename=<parameter_name>]
       ----
       bfs:BFS[a]
       /queue:FIFO
@@ -54,7 +54,7 @@ Feature: sdedit block
       The following source :
       
       ....
-      [sdedit,<% parameters.each { %>${it.attribute('name')}=${it.attribute('value')},<%}%>outputfilename=test]
+      [sdedit,<% parameters.each { %>${it.attribute('name')}=${it.attribute('value')},<%}%>filename=test]
       ----
       bfs:BFS[a]
       /queue:FIFO
@@ -64,7 +64,7 @@ Feature: sdedit block
       ----
       ....
            
-      [sdedit,<% parameters.each { %>${it.attribute('name')}=${it.attribute('value')},<%}%>outputfilename=test]
+      [sdedit,<% parameters.each { %>${it.attribute('name')}=${it.attribute('value')},<%}%>filename=test]
       ----
       bfs:BFS[a]
       /queue:FIFO
