@@ -10,7 +10,7 @@
 
 	<groupId>com.github.domgold</groupId>
 	<artifactId>asciidoctor-sdedit-extension</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>asciidoctor-sdedit-extension</name>
