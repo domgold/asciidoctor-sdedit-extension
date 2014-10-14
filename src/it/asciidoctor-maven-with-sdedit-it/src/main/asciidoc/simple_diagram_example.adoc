@@ -1,0 +1,15 @@
+= A simple diagram
+ 
+We want to verify that sdedit diagrams get rendered by maven. 
+ 
+[sdedit,filename=sdedit] 
+....
+bfs:BFS[a]
+/queue:FIFO
+
+bfs:queue.new
+bfs:test=queue.destroy()
+....
+
+.Other images don't break.
+image::Koala.jpg[]

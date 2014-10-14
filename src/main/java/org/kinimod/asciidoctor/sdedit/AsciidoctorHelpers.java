@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.io.FilenameUtils;
 import org.asciidoctor.ast.AbstractBlock;
 import org.asciidoctor.extension.Processor;
 import org.jruby.RubyString;
@@ -72,18 +73,22 @@ public final class AsciidoctorHelpers {
 		if (dir == null) {
 			dir = getAttribute(documentAttributes, OUTDIR_ATTRIBUTE, null,
 					false);
-		}
-		if (dir == null) {
-			dir = getAttribute(documentAttributes, DOCDIR_ATTRIBUTE, "", true);
-		}
-		if ("".equals(dir)) {
-			throw new RuntimeException(
-					"Invalid docdir, consider changing safemode to unsafe.");
-		}
-		String imagesdir = AsciidoctorHelpers.getAttribute(documentAttributes,
-				IMAGESDIR_ATTRIBUTE, "", false);
-		if (!("".equals(imagesdir))) {
-			outDir = new File(dir, imagesdir);
+
+			if (dir == null) {
+				dir = getAttribute(documentAttributes, DOCDIR_ATTRIBUTE, "",
+						true);
+			}
+			if ("".equals(dir)) {
+				throw new RuntimeException(
+						"Invalid docdir, consider changing safemode to unsafe.");
+			}
+			String imagesdir = AsciidoctorHelpers.getAttribute(
+					documentAttributes, IMAGESDIR_ATTRIBUTE, "", false);
+			if (!("".equals(imagesdir))) {
+				outDir = new File(FilenameUtils.concat(dir, imagesdir));
+			} else {
+				outDir = new File(dir);
+			}
 		} else {
 			outDir = new File(dir);
 		}

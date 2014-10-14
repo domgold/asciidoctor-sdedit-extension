@@ -14,15 +14,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.asciidoctor</groupId>
-				<artifactId>asciidoclet</artifactId>
-				<version>@project.version@</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 	<build>
 		<plugins>
 			<plugin>
@@ -41,7 +32,7 @@
 						<docletArtifact>
 							<groupId>com.github.domgold</groupId>
 							<artifactId>asciidoctor-sdedit-extension</artifactId>
-							<version>0.1.0</version>
+							<version>@project.version@</version>
 						</docletArtifact>
 					</docletArtifacts>
 					<additionalparam>
