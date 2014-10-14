@@ -4,4 +4,4 @@ jdk:
   - openjdk7
   - oraclejdk7
   - oraclejdk8
-  - openjdk6
+# - openjdk6 (not supported or not enough resources on travis ?)
