@@ -1,0 +1,67 @@
+= asciidoctor-sdedit-extension
+:github-url: https://github.com/domgold/asciidoctor-sdedit-extension/blob/master/src/test/resources/org/kinimod
+
+http://asciidoctor.org[Asciidoctor] extension for creating UML2 sequence diagrams using the http://sdedit.sourceforge.net/[sdedit] library.
+
+Renders sdedit code to images during the asciidoctor render process. The code can come from external files or literal blocks in the document.
+
+== Usage
+
+The extension provides an `sdedit` block to be used with literal blocks :
+
+-----
+[sdedit]
+....
+ bfs:BFS[a]
+/queue:FIFO
+      
+bfs:queue.new
+bfs:test=queue.destroy()
+....
+-----
+
+If you prefer to keep the sdedit content in external files, you can use the block macro :
+
+-----
+sdedit::mydiagram.sd[]
+-----
+
+== Configuration
+
+=== Attributes
+
+filename::
+  The filename to be used for the generated image. Must be unique. If no filename is provided, it gets generated randomly.
+type::
+  The output type for the generated image. Can be one of :
+  * `png` (default)
+  * `svg`
+  * `gif`
+  * `jpeg`
+  * potentially other formats supported by sdedit (but not all make sense, e.g. pdf or swf won't work well with an html image tag ... )
+conf::
+  May be used to configure sdedit via an sdedit configuration file. 
+  This attribute must be the path to the configuration relative to the docdir attribute.
+SdEdit configuration items::
+  You can pass in much of the sdedit configuration elements as attributes, 
+  e.g. `returnArrowVisible=false` hides return arrows for empty return messages.
+  See {github-url}/sdedit_parameters.feature[sdedit_parameters.feature] for a complete list of all supported attributes. +
+
+=== Images directory
+
+You can control the destination of rendered images via attributes at the document level.
+
+imagesoutdir::
+  specifies either a relative or absolute directory.
+outdir::
+  specifies either a relative or absolute directory. 
+  If `imagesdir` has also been specified (it is by default), then the resulting destination is a combination of both.
+imagesdir::
+  specifies either a relative or absolute directory. 
+  Relative directories are relative to `docdir`.
+
+=== Configuration file
+
+You can also provide a global configuration file to be used for all diagrams. 
+Just place the configuration file in the same directory as the doc file (=> `docdir`) and name it `sdedit.conf`.
+For more information on the syntax of this file, you can find the default configuration file inside the sdedit jar file.
